@@ -14,7 +14,16 @@ Things you may want to cover:
 
 - Database creation
 
+```sh
+brew install postgresql
+rails db:create db:migrate
+```
+
 - Database initialization
+
+```sh
+brew services start posrgresql
+```
 
 - How to run the test suite
 
