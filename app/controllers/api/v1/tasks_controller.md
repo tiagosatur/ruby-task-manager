@@ -284,3 +284,16 @@ namespace :api do
   end
 end
 ```
+
+## `set_task`
+
+O que é e de onde vem `params`? o params é um objeto especial (um hash) que contém **todos os parametros enviados na requisição HTTTP**. Ele está disponível automaticamente em todos os controllers e actions.
+
+### De onde vem o `params`?
+
+- O rails cria o objeto `params`para cada requisição recebida.
+- Ele junta:
+  - Parametros de rota (ex: `/tasks/1` => `params[:id] === 1`)
+  - Parametros de query string (ex: `/tasks?status=done` => `params[:status] == "done`)
+  - Parametros de formulário (ex: enviados via POST)
+  - Parametros de JSON (em APIs)
