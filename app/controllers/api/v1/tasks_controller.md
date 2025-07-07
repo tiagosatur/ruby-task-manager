@@ -423,3 +423,46 @@ rescue StandardError => e
   render json: { error: "Something went wrong" }, status: :internal_server_error
 end
 ```
+
+## `bulk_destroy`
+
+```ruby
+if task_ids.blank?
+  render json: { error: "No task IDs provided" }, status: :bad_request
+end
+```
+
+### What means `.blank?`?
+
+`.blank` is a rails method that checks if a value is "empty".
+It returns **true** if:
+
+- nil
+- Empty string `""`
+- String with only whitespace `" "`
+- Empty array `[]`
+- Empty hash `{}`
+
+### What is `status:`?
+
+`status:` is a parameter for the `render` method that sets the HTTP status code of the response. Common status codes:
+
+- 200 - Ok (success)
+- 201 - Created
+- 400 - Bad request
+- 404 - Not found
+- 422 - Unprocessable entity
+- 500 - Internal server error
+
+### Where from comes `:bad_request`?
+
+`:bad_request` is a Rails symbol that represents status code 400.
+Rails provides these convenient symbols instead of using numbers:
+
+```ruby
+:ok                    # 200
+:created               # 201
+:not_found             # 404
+:unprocessable_entity  # 422
+:internal_server_error # 500
+```

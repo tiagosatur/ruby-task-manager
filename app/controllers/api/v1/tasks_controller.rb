@@ -34,6 +34,38 @@ module Api
           head :no_content
         end
 
+        def bulk_destroy
+          task_ids = params[:ids]
+
+          if task_ids.blank?
+            render json: { error: "No task IDs provided" }, status: :bad_request
+          end
+
+          # Find tasks and collect any that don't exist
+          found_tasks = Task.where(id: task_ids)
+          existing_ids = found_tasks.pluck(:id)
+          missing_ids = task_ids.map(&:to_i) - existing_ids
+
+          # Delete existing tasks
+          deleted_count = found_tasks.delete_all
+
+          # Build response
+          response = {
+            deleted_count: deleted_count,
+            deleted_ids: existing_ids
+          }
+
+          # Include imssing IDs in response if any
+          if missing_ids.any?
+            response[:missing_ids] = missing_ids
+            response[:message] = "Some tasks were not found"
+          end
+
+          render json: response, status: :ok
+        rescue StandardError => e
+          render json: { error: "Failed to delete tasks: #{e.message}" }, status: :internal_server_error
+        end
+
         private
 
         def set_task

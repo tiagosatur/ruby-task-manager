@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :tasks, only: [ :show, :create, :update, :destroy ] do
         collection do
           get :list
+          delete :bulk_destroy
         end
       end
     end
