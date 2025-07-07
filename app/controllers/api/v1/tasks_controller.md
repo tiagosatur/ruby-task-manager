@@ -287,13 +287,139 @@ end
 
 ## `set_task`
 
-O que é e de onde vem `params`? o params é um objeto especial (um hash) que contém **todos os parametros enviados na requisição HTTTP**. Ele está disponível automaticamente em todos os controllers e actions.
+### O que é e de onde vem `params`?
+
+O params é um objeto especial (um hash) que contém **todos os parametros enviados na requisição HTTTP**. Ele está disponível automaticamente em todos os controllers e actions.
 
 ### De onde vem o `params`?
 
 - O rails cria o objeto `params`para cada requisição recebida.
 - Ele junta:
   - Parametros de rota (ex: `/tasks/1` => `params[:id] === 1`)
-  - Parametros de query string (ex: `/tasks?status=done` => `params[:status] == "done`)
+  - Parametros de query string (ex: `/tasks?status=done` => `params[:status] == "done"`)
   - Parametros de formulário (ex: enviados via POST)
   - Parametros de JSON (em APIs)
+
+### O que é e pra que serve o `rescue ActiveRecord::RecordNotFound`?
+
+O `rescue` é como o `catch` do javascript, captura erros.
+
+```ruby
+rescue ActiveRecord::RecordNotFound
+  render json: { error: "Task not found" }, status: :not_found
+end
+```
+
+O `rescue Active::RecordNotFound` é uma estrutura de tratamento de exceções em Ruby/Rails que "captura" erros quando um registro não é encontrado no banco de dados.
+
+#### Como funciona?
+
+**1. Sem o `rescue`**
+Se nao tratar essa exceção, seu usuário veria uma página de erro 500
+
+- O Rails tenta executar `Task.find(params[:id])`.
+- Se der erro (tarefa não encontrada), ele captura a exceção
+
+**2. Com o `rescue`**
+
+- O Rails tenta executar `@task = Task.find(params[:id])`.
+- Se a tarefa NÃO for encontrada, o Rails lança uma exceção e executa o código do `rescue`.
+- Em ves de mostrar um erro 500, retorna um JSON organizado com status 404
+
+#### Tipos de `rescue`
+
+Captura qualquer erro:
+
+```ruby
+rescue
+  puts "Algo deu errado"
+```
+
+Captura erro específico:
+
+```ruby
+rescue ActiveRecord::RecordNotFound
+  puts "Registro não encontrado"
+```
+
+Captura múltiplos tipos de erro:
+
+```ruby
+rescue ActiveRecord:RecordNotFound, ActiveRecord::RecordInvalid
+  puts "Erro de banco de dados"
+```
+
+### No ruby existem 2 formas de usar `rescue`
+
+**1. Dentro de métodos**
+
+```ruby
+def set_task
+  @task = Task.find(params[:id])
+rescue ActiveRecord::RecordNotFound
+  render json: { error: "Task not found" }, status: not_found
+end
+```
+
+Não precisa de `begin` porque o método já funciona como um bloco que pode ter `rescue`
+
+**2. Fora de métodos ou em blocos**
+
+```ruby
+begin
+  @task = Task.find(params[:id])
+rescue ActiveRecord:RecordNotFound
+  render json { error: "Task not Found" }, status: not_found
+end
+```
+
+Precisa de `begin` para delimitar onde comoça o bloco de código que pode dar erro.
+
+### Outros tipos de erros comuns para capturar
+
+#### Erros de banco de dados (ActiveRecord):
+
+```ruby
+rescue ActiveRecord::RecordNotFound
+rescue ActiveRecord::RecordInvalid # Validação falhou
+rescue ActiveRecord:RecordNotSaved
+rescue ActiveRecord::ConnectionNotEstabilished # Sem conexão com banco
+```
+
+#### Erros de validação/parâmetros:
+
+```ruby
+rescue ActionController:ParameterMissing # Parametro obrigatorio faltando
+rescue ArgumentError # Argumento Invalido
+rescue NoMethodError # Método nao existe
+```
+
+#### Erros de rede/HTTP:
+
+```ruby
+rescue Net::TimeoutError # Timeout da requisição
+rescue HTTPError # Erro HTTP genérico
+rescue Errno:ECONNREFUSED # Conexão recusada
+```
+
+#### Erros genéricos:
+
+```ruby
+rescue StandardError # Captura a maioria dos erros
+rescue => e # Captura qualquer erro e armazana em e
+```
+
+#### Exemplo p'ratico com múltiplos erros:
+
+```ruby
+def create
+  @task = Task.create!(task_params)
+  render json: @task, status: :created
+rescue ActiveRecord::RecordInvalid => e
+  render json: { errors: e.record.errors }, status: :unprocessable_entity
+rescue ActionController::ParameterMissing => e
+  render json: { error: "Missing parameter: #{e.param}" }, status: :bad_request
+rescue StandardError => e
+  render json: { error: "Something went wrong" }, status: :internal_server_error
+end
+```
