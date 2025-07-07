@@ -2,6 +2,8 @@
 
 Task manager API
 
+![Task Manager Demo](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExcm52NHB1cjg1MWxwN2Zsb2U0cWFlbDVsOTgzczNpa2o0bzNpd3R5MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/nZjJ3iPXpmRwI/giphy.gif)
+
 ## 🛠️ Setup
 
 - Ruby version
