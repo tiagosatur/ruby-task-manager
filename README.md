@@ -1,5 +1,9 @@
 # README
 
+Task manager API
+
+## 🛠️ Setup
+
 - Ruby version
   3.3.5
 
