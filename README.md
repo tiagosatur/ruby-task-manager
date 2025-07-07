@@ -1,16 +1,19 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
 - Ruby version
   3.3.5
 
 - System dependencies
 
+  - PostgreSQL (database)
+  - Bundler (gem management)
+  - Rails 8.0.2
+
 - Configuration
+
+  - Copy `config/database.yml` and update with your database credentials
+  - Environment variables can be set in `.env` file (copy from `envexample` and modify PGUSER)
+  - CORS is configured in `config/initializers/cors.rb` for API access
 
 - Database creation
 
@@ -27,11 +30,30 @@ brew services start postgresql
 
 - How to run the test suite
 
+```sh
+# Run all tests
+bundle exec rspec
+
+# Run specific test file
+bundle exec rspec spec/models/task_spec.rb
+
+# Run with coverage
+bundle exec rspec --format documentation
+```
+
 - Services (job queues, cache servers, search engines, etc.)
 
-- Deployment instructions
+  - This API uses Rails built-in job queue system
+  - No external services required for basic functionality
+  - Optional: Redis for caching (not implemented yet)
 
-- ...
+- Deployment instructions (WIP)
+  - This project includes Docker configuration (`Dockerfile`)
+  - For production deployment, configure environment variables:
+    - `DATABASE_URL`
+    - `RAILS_ENV=production`
+    - `SECRET_KEY_BASE`
+  - Run: `docker build -t ruby-task-manager .`
 
 ## ✅ Project Objective
 
