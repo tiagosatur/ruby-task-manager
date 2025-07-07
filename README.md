@@ -22,7 +22,7 @@ rails db:create db:migrate
 - Database initialization
 
 ```sh
-brew services start posrgresql
+brew services start postgresql
 ```
 
 - How to run the test suite
@@ -33,39 +33,39 @@ brew services start posrgresql
 
 - ...
 
-## ✅ Objetivo do projeto
+## ✅ Project Objective
 
-Uma API em Ruby on Rails 8 para gerenciar tarefas, com recursos como:
+A Ruby on Rails 8 API for managing tasks, with features like:
 
-- CRUD completo de tarefas
-- Filtros por status
-- Ordenação por data
-- Validações de dados
+- Complete CRUD operations for tasks
+- Filtering by status
+- Sorting by date
+- Data validation
 
-Testes com RSpec
+Testing with RSpec
 
-## 📁 Estrutura do projeto
+## 📁 Project Structure
 
-| Pasta              | Função                           |
-| ------------------ | -------------------------------- |
-| `app/models`       | Lógica de dados (modelo `Task`)  |
-| `app/controllers`  | Ações da API (`TasksController`) |
-| `config/routes.rb` | Rotas da API                     |
-| `spec/`            | Testes com RSpec                 |
+| Folder             | Function                        |
+| ------------------ | ------------------------------- |
+| `app/models`       | Data logic (`Task` model)       |
+| `app/controllers`  | API actions (`TasksController`) |
+| `config/routes.rb` | API routes                      |
+| `spec/`            | Tests with RSpec                |
 
-## 🛠️ Passo a passo para criar a API
+## 🛠️ Step-by-step guide to create the API
 
-✅ 1. Criar estrutura do Rails em modo API
-Como já está dentro da pasta ruby-task-manager, rode:
+✅ 1. Create Rails structure in API mode
+Since you're already inside the ruby-task-manager folder, run:
 
 ```sh
 rails new . --api -T
 ```
 
-O -T pula a instalação do Minitest, pois usaremos o RSpec.
+The -T flag skips Minitest installation, as we'll use RSpec.
 
-✅ 2. Adicionar gems de testes no Gemfile
-No final do seu Gemfile, adicione:
+✅ 2. Add testing gems to Gemfile
+At the end of your Gemfile, add:
 
 ```sh
 group :development, :test do
@@ -75,28 +75,28 @@ group :development, :test do
 end
 ```
 
-Depois rode:
+Then run:
 
 ```sh
 bundle install
 rails generate rspec:install
 ```
 
-✅ 3. Gerar o model Task
+✅ 3. Generate the Task model
 
 ```sh
 rails g model Task title:string description:text status:string due_date:datetime
 rails db:create db:migrate
 ```
 
-✅ 4. Criar o controller da API
+✅ 4. Create the API controller
 
 ```sh
 rails g controller api/v1/tasks --skip-template-engine --no-assets --no-helper
 ```
 
-✅ 5. Configurar rotas
-Em `config/routes.rb`, substitua tudo por:
+✅ 5. Configure routes
+In `config/routes.rb`, replace everything with:
 
 ```sh
 Rails.application.routes.draw do
